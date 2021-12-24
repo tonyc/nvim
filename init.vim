@@ -5,7 +5,11 @@ Plug 'tonyc/vim-vividchalk'
 Plug 'junegunn/fzf' , { 'do': {  -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 
-Plug 'posva/vim-vue'
+" javascript stuff
+Plug 'vim-scripts/JavaScript-syntax'
+"Plug 'posva/vim-vue'
+"Plug 'vim-scripts/node'
+"Plug 'thinca/vim-textobj-function-javascript'
 
 " airline stuff
 Plug 'vim-airline/vim-airline'
@@ -16,7 +20,11 @@ Plug 'tpope/vim-unimpaired'
 
 set updatetime=250
 
-Plug 'dense-analysis/ale'
+
+
+"Plug 'dense-analysis/ale'
+
+" elixir
 Plug 'elixir-lang/vim-elixir'
 Plug 'andyl/vim-textobj-elixir'
 Plug 'mhinz/vim-mix-format'
@@ -25,31 +33,33 @@ Plug 'mhinz/vim-mix-format'
 Plug 'Raimondi/delimitMate'
 Plug 'kana/vim-smartinput'
 Plug 'kana/vim-textobj-user'
-"Plug 'pix/vim-align'
+
+
 Plug 'scrooloose/nerdcommenter'
+
+" ruby
 "Plug 'tpope/vim-haml'
 "Plug 'tpope/vim-rails'
-Plug 'vim-scripts/JavaScript-syntax'
+"Plug 'vim-scripts/textobj-rubyblock'
+"Plug 'pix/vim-align'
+
 Plug 'tpope/vim-surround'
 Plug 'vim-scripts/matchit.zip'
-"Plug 'vim-scripts/textobj-rubyblock'
 Plug 'plasticboy/vim-markdown'
 Plug 'kana/vim-textobj-function'
-" required by snipmate
+
+" better json syntax/highlighting
+Plug 'elzr/vim-json'
+
+" snipmate + dependencies
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'tomtom/tlib_vim'
-
-" requires the two above here
 Plug 'garbas/vim-snipmate'
-" h snipmate-deprecate
+
 let g:snipMate = { 'snippet_version' : 1 }
 
+" control the cursor shape in terminals that support it
 Plug 'jszakmeister/vim-togglecursor'
-
-" javascript stuff
-"Plug 'digitaltoad/vim-jade'
-"Plug 'vim-scripts/node'
-"Plug 'thinca/vim-textobj-function-javascript'
 
 " Language server
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -87,22 +97,19 @@ if has('nvim-0.4.0') || has('patch-8.2.0750')
   "vnoremap <silent><nowait><expr> <C-y> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
 endif
 
+" end coc settings
+
 " syntastic config. This slightly overlaps with coc and rust-analyzer
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
 
+" these are disabled because coc handles errors in the locations window
 "let g:syntastic_always_populate_loc_list = 1
 "let g:syntastic_auto_loc_list = 1
 "let g:syntastic_check_on_open = 1
 "let g:syntastic_check_on_wq = 0
 
-
-
-
-
-Plug 'elzr/vim-json'
-"Plug 'joukevandermaas/vim-ember-hbs'
 
 call plug#end()
 " end plug setup
@@ -136,7 +143,6 @@ set tabstop=2
 set complete-=i
 
 set cursorline
-"set cursorcolumn=80,120
 
 set foldmethod=syntax
 set norelativenumber
@@ -151,7 +157,6 @@ set incsearch
 
 " allow question marks to be part of a keyword (e.g. "present?")
 set iskeyword+=?
-" set iskeyword+=:
 
 set laststatus=2
 set list!
@@ -172,17 +177,9 @@ set visualbell
 set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*.so
 set wildmenu
 set wildmode=list:longest
-"set winwidth=84
-" We have to have a winheight bigger than we want to set winminheight. But if
-" we set winheight to be huge before winminheight, the winminheight set will
-" fail.
-"set winheight=10
-"set winminheight=10
-"set winheight=999
 
 " terminal color customizations
 highlight LineNr ctermbg=DarkBlue
-
 
 " sign column highlight
 highlight GitGutterAdd ctermfg=darkgreen term=bold
@@ -199,8 +196,8 @@ autocmd BufReadPost * highlight SignColumn ctermbg=black
 set autoread
 autocmd CursorHold *.ex,*.exs? checktime
 autocmd CursorMoved *.ex,*.exs? checktime
-"autocmd CursorMovedI *.ex,*.exs? checktime
 
+" coc: highlight occurrences when holding on a symbol
 autocmd Cursorhold * silent call CocActionAsync('highlight')
 highlight CocHighlightText ctermbg=darkblue ctermfg=white
 
@@ -239,7 +236,6 @@ let g:mix_format_on_save = 0
 "let g:ale_linters.elixir = ['elixir-ls']
 let g:ale_linters = { 'elixir': ['credo', 'elixir-ls'], 'ruby': [] }
 let g:ale_fixers = { '*': [], 'elixir': '', }
-"let g:ale_fixers = { '*': ['remove_trailing_lines', 'trim_whitespace'], 'elixir': 'mix_format', }
 
 let g:ale_elixir_elixir_ls_release = $HOME . '/dev/elixir-ls/release'
 let g:ale_elixir_elixir_ls_config = {'elixirLS': {'dialyzerEnabled': v:false}}
@@ -260,6 +256,9 @@ let g:ale_lint_on_save = 1
 nnoremap ]r :ALENextWrap<CR>
 nnoremap [r :ALEPreviousWrap<CR>
 
+nnoremap ]a :ALENextWrap<cr>zz
+nnoremap [a :ALEPreviousWrap<cr>zz
+
 nnoremap <leader>q :bdel!<CR>
 
 " airline/powerline
@@ -274,56 +273,61 @@ let g:airline_symbols.dirty = '*'
 
 map <D-'> :Align=><CR>
 
-if has("gui")
-  set guifont=Inconsolata:h16
-  set guioptions-=T
-  set guioptions-=L
+"I don't run vim in a gui any more
+"
+"if has("gui")
+"  set guifont=Inconsolata:h16
+"  set guioptions-=T
+"  set guioptions-=L
 
-  " always show the tab bar
-  set showtabline=1
+"  " always show the tab bar
+"  set showtabline=1
   
-  " switch to tabs with cmd-1, cmd-2 etc
-  map <D-1> :tabn 1<CR>
-  map <D-2> :tabn 2<CR>
-  map <D-3> :tabn 3<CR>
-  map <D-4> :tabn 4<CR>
-  map <D-5> :tabn 5<CR>
-  map <D-6> :tabn 6<CR>
-  map <D-7> :tabn 7<CR>
-  map <D-8> :tabn 8<CR>
-  map <D-9> :tabn 9<CR>
-  map! <D-1> <C-O>:tabn 1<CR>
-  map! <D-2> <C-O>:tabn 2<CR>
-  map! <D-3> <C-O>:tabn 3<CR>
-  map! <D-4> <C-O>:tabn 4<CR>
-  map! <D-5> <C-O>:tabn 5<CR>
-  map! <D-6> <C-O>:tabn 6<CR>
-  map! <D-7> <C-O>:tabn 7<CR>
-  map! <D-8> <C-O>:tabn 8<CR>
-  map! <D-9> <C-O>:tabn 9<CR>
-endif
+"  " switch to tabs with cmd-1, cmd-2 etc
+"  map <D-1> :tabn 1<CR>
+"  map <D-2> :tabn 2<CR>
+"  map <D-3> :tabn 3<CR>
+"  map <D-4> :tabn 4<CR>
+"  map <D-5> :tabn 5<CR>
+"  map <D-6> :tabn 6<CR>
+"  map <D-7> :tabn 7<CR>
+"  map <D-8> :tabn 8<CR>
+"  map <D-9> :tabn 9<CR>
+"  map! <D-1> <C-O>:tabn 1<CR>
+"  map! <D-2> <C-O>:tabn 2<CR>
+"  map! <D-3> <C-O>:tabn 3<CR>
+"  map! <D-4> <C-O>:tabn 4<CR>
+"  map! <D-5> <C-O>:tabn 5<CR>
+"  map! <D-6> <C-O>:tabn 6<CR>
+"  map! <D-7> <C-O>:tabn 7<CR>
+"  map! <D-8> <C-O>:tabn 8<CR>
+"  map! <D-9> <C-O>:tabn 9<CR>
+"endif
 
 " hoist lines up or down with alt-j/alt-k
 " http://vim.wikia.com/wiki/Moving_lines_up_or_down
+"
+" 2021-12-24 - changed these from <D-?> to <M-?> because that works in WSL
+nnoremap <M-j> :m+<CR>==
+nnoremap <M-k> :m-2<CR>==
+inoremap <M-j> <Esc>:m+<CR>==gi
+inoremap <M-k> <Esc>:m-2<CR>==gi
+vnoremap <M-j> :m'>+<CR>gv=gv
+vnoremap <M-k> :m-2<CR>gv=gv
 
-nnoremap ]a :ALENextWrap<cr>zz
-nnoremap [a :ALEPreviousWrap<cr>zz
 
-nnoremap <D-j> :m+<CR>==
-nnoremap <D-k> :m-2<CR>==
-inoremap <D-j> <Esc>:m+<CR>==gi
-inoremap <D-k> <Esc>:m-2<CR>==gi
-vnoremap <D-j> :m'>+<CR>gv=gv
-vnoremap <D-k> :m-2<CR>gv=gv
-
-" highlight the current word, but return to it
+" CORE: highlight the current word, but return to it
 nnoremap * *#
+
+" CORE: go to next/prev occurrence, but center in window
+noremap n nzz
+noremap N Nzz
 
 " reselect visual block after indent/outdent
 vnoremap < <gv
 vnoremap > >gv
 
-" easy split navigation
+" CORE: easy split navigation
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
@@ -332,10 +336,11 @@ nnoremap <C-l> <C-w>l
 nnoremap <leader>x :spl<cr>
 nnoremap <leader>v :vspl<cr>
 
-" trim all trailing whitespace
-"nnoremap <leader>s mz:%s/\s\+$//e<CR>:nohlsearch<CR>`z:echo "Trailing whitespace removed"<CR>
-
-
+" legacy rails ctrl-p stuff
+"
+" leaving this here because it would be useful to backport to fzf
+" if I ever do rails again
+"
 "map <leader>gv :CtrlP app/views<cr>
 "map <leader>gc :CtrlP app/controllers<cr>
 "map <leader>gm :CtrlP app/models<cr>
@@ -354,16 +359,18 @@ nnoremap <leader>v :vspl<cr>
 "map <leader>gj :CtrlP app/assets/javascripts<cr>
 "map <leader>gf :CtrlP spec/factories<cr>
 
-let g:ctrlp_use_caching = 0
-let g:ctrlp_match_window_reversed = 1
-let g:ctrlp_follow_symlinks = 1
-let g:ctrlp_jump_to_buffer = 2
-let g:ctrlp_open_multi = '1h'
+"let g:ctrlp_use_caching = 0
+"let g:ctrlp_match_window_reversed = 1
+"let g:ctrlp_follow_symlinks = 1
+"let g:ctrlp_jump_to_buffer = 2
+"let g:ctrlp_open_multi = '1h'
 
-let g:ctrlp_custom_ignore = { 'dir' : '\public/uploads\|node_modules\|deps\|_build\|\app/assets/images\|vendor/assets/images\|tmp\|bin|\.git|\.bundle|coverage|log' }
+"let g:ctrlp_custom_ignore = { 'dir' : '\public/uploads\|node_modules\|deps\|_build\|\app/assets/images\|vendor/assets/images\|tmp\|bin|\.git|\.bundle|coverage|log' }
 
-let g:ctrlp_highlight_match = [1, 'Search']
-let g:ctrlp_max_height = 10
+"let g:ctrlp_highlight_match = [1, 'Search']
+"let g:ctrlp_max_height = 10
+
+" end legacy rails ctrl-p
 
 " Edit or view files in same directory as current file
 cnoremap %% <C-R>=expand('%:h').'/'<cr>
@@ -371,9 +378,6 @@ cnoremap %% <C-R>=expand('%:h').'/'<cr>
 map <leader>e :edit %%
 map <leader>v :view %%
 
-" Surround binds
-"map <leader>s( ysiW)
-"map <leader>s[ ysiW]
 
 " Set the netrw listing style to tree
 let g:netrw_liststyle = 3
@@ -396,8 +400,6 @@ let g:vim_markdown_fenced_languages = ['json=json']
 " turn off quote concealing for json
 let g:vim_json_syntax_conceal = 0
 
-noremap n nzz
-noremap N Nzz
 
 " opening a file in a vertical split using 'v' should open to the right
 let g:netrw_altv = 1
@@ -466,44 +468,47 @@ map <leader>b :Buffers<cr>
 "  \           : fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'right:30%', '?'),
 "  \   <bang>0)
 
-function! RunAllTests()
-  :w
-  :exec ":T echo \"Running all tests\"; docker exec -it dev_api_1 make test
-endfunction
+"
+" 2021-12-24: old grb-style ruby/rails test running. Disabled for now.
+"
+"function! RunAllTests()
+"  :w
+"  :exec ":T echo \"Running all tests\"; docker exec -it dev_api_1 make test
+"endfunction
 
-" Rails/rspec test runners
-function! RunTests(filename)
-    " Write the file and run tests for the given filename
-    :w
-    :exec ":T echo \"Running " . a:filename . "\"; docker exec -it dev_api_1 make test file=" . a:filename
-endfunction
+"" Rails/rspec test runners
+"function! RunTests(filename)
+"    " Write the file and run tests for the given filename
+"    :w
+"    :exec ":T echo \"Running " . a:filename . "\"; docker exec -it dev_api_1 make test file=" . a:filename
+"endfunction
 
-function! SetTestFile()
-    " Set the spec file that tests will be run for.
-    let t:grb_test_file=@%
-endfunction
+"function! SetTestFile()
+"    " Set the spec file that tests will be run for.
+"    let t:grb_test_file=@%
+"endfunction
 
-function! RunTestFile(...)
-    if a:0
-        let command_suffix = a:1
-    else
-        let command_suffix = ""
-    endif
+"function! RunTestFile(...)
+"    if a:0
+"        let command_suffix = a:1
+"    else
+"        let command_suffix = ""
+"    endif
 
-    " Run the tests for the previously-marked file.
-    let in_spec_file = match(expand("%"), '_test.exs$') != -1
-    if in_spec_file
-        call SetTestFile()
-    elseif !exists("t:grb_test_file")
-        return
-    end
-    call RunTests(t:grb_test_file . command_suffix)
-endfunction
+"    " Run the tests for the previously-marked file.
+"    let in_spec_file = match(expand("%"), '_test.exs$') != -1
+"    if in_spec_file
+"        call SetTestFile()
+"    elseif !exists("t:grb_test_file")
+"        return
+"    end
+"    call RunTests(t:grb_test_file . command_suffix)
+"endfunction
 
-function! RunNearestTest()
-    let spec_line_number = line('.')
-    call RunTestFile(":" . spec_line_number)
-endfunction
+"function! RunNearestTest()
+"    let spec_line_number = line('.')
+"    call RunTestFile(":" . spec_line_number)
+"endfunction
 
 "function! RunNpmTest()
 "  exec ":!clear; npm test"
@@ -526,6 +531,7 @@ map <leader>a :call RunAllTests())<cr>
 map <leader>av :AV<CR>
 map <leader>as :AS<CR>
 
+" CORE: disable arrows
 map <Left> <nop>
 map <Right> <nop>
 map <Up> <nop>
@@ -534,7 +540,6 @@ map <Down> <nop>
 highlight SignColumn ctermbg=black
 highlight CocHighlightText ctermbg=darkblue ctermfg=white
 set ignorecase
-
 
 
 "if &term =~ '^xterm'
