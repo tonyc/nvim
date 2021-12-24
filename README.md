@@ -11,7 +11,9 @@ Start nvim and run `:PlugInstall`
 ### For coc.nvim:
 
 * nodejs
-	asdf global nodejs 14.15.2 (or whateveR)
+
+	`asdf global nodejs 14.15.2` (or whatever)
 
 * coc-rust-analyzer:
-	:CocInstall coc-rust-analyzer
+
+	`:CocInstall coc-rust-analyzer`
