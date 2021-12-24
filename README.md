@@ -2,7 +2,7 @@
 
 ## Installing
 
-Clone this repo, and put it in `~/.config/nvim`
+Clone this repo, and put it in `~/.config/nvim`.  Don't bother messing around with symlinks from legacy vim setups.
 
 Start nvim and run `:PlugInstall`
 
