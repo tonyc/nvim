@@ -450,9 +450,9 @@ command! Config :edit $MYVIMRC
 let g:fzf_preview_window = ['right:hidden', 'ctrl-/']
 
 command! -bang -nargs=* All
-  \ call fzf#run(fzf#wrap({'source': 'rg --files --hidden --no-ignore-vcs --glob "!{node_modules/*,.git/*,_build}"', 'down': '40%', 'options': '--expect=ctrl-t,ctrl-x,ctrl-v --multi --reverse' }))
+  \ call fzf#run(fzf#wrap({'source': 'rg --files', 'down': '40%', 'options': '--expect=ctrl-t,ctrl-x,ctrl-v --multi --reverse' }))
 
-map <D-t> :All<cr>
+map <M-t> :All<cr>
 map <leader>f :All<cr>
 map <leader>F :Rg<cr>
 map <leader>c :Tags<cr>
