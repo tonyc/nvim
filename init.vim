@@ -2,6 +2,9 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'tonyc/vim-vividchalk'
 
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'vim-syntastic/syntastic'
+
 Plug 'junegunn/fzf' , { 'do': {  -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 
@@ -17,7 +20,7 @@ Plug 'airblade/vim-gitgutter'
 set updatetime=250
 
 "Plug 'dense-analysis/ale'
-Plug 'elixir-lang/vim-elixir'
+Plug 'elixir-editors/vim-elixir'
 Plug 'andyl/vim-textobj-elixir'
 Plug 'mhinz/vim-mix-format'
 
@@ -43,6 +46,27 @@ Plug 'tomtom/tlib_vim'
 " requires the two above here
 Plug 'garbas/vim-snipmate'
 
+
+" coc/ruby
+let g:coc_global_extensions = []
+"let g:coc_global_extensions = ['coc-solargraph']
+
+"inoremap <silent><expr> <TAB>
+"      \ pumvisible() ? "\<C-n>" :
+"      \ <SID>check_back_space() ? "\<TAB>" :
+"      \ coc#refresh()
+"inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+
+"syntastic settings
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
 
 " javascript stuff
 "Plug 'digitaltoad/vim-jade'
@@ -149,6 +173,11 @@ highlight GitGutterChangeInvisible ctermfg=yellow term=bold
 
 autocmd BufReadPost * highlight SignColumn ctermbg=black
 
+"autocmd BufReadPost *.html.heex set ft=html
+au BufRead,BufNewFile *.ex,*.exs set filetype=elixir
+au BufRead,BufNewFile *.eex,*.heex,*.leex,*.sface,*.lexs set filetype=eelixir
+au BufRead,BufNewFile mix.lock set filetype=elixir
+
 " airline
 "autocmd BufReadPost * AirlineTheme light
 
@@ -184,7 +213,7 @@ let delimitMate_expand_space = 1
 cabbrev h tab h
 
 " Elixir stuff
-let g:mix_format_on_save = 0
+let g:mix_format_on_save = 1
 
 " elixirLS
 
@@ -336,6 +365,11 @@ cnoremap %% <C-R>=expand('%:h').'/'<cr>
 map <leader>e :edit %%
 map <leader>v :view %%
 
+
+" RainbowCSV bindings
+"nnoremap <leader>ra :RainbowAlign<CR>
+"nnoremap <leader>rs :RainbowShrink<CR>
+
 " Surround binds
 "map <leader>s( ysiW)
 "map <leader>s[ ysiW]
@@ -416,45 +450,48 @@ map <leader>gs :Files app/services<cr>
 let g:fzf_preview_window = []
 "let g:fzf_layout = { 'down': '12' }
 "let g:fzf_layout = { 'window': { 'width': 0.25, 'height': 0.2 } }
-let g:fzf_layout = { 'window': { 'width': 120, 'height': 14, 'yoffset': 0, 'border': 'rounded' } }
+"let g:fzf_layout = { 'window': { 'width': 120, 'height': 14, 'yoffset': 0, 'border': 'rounded' } }
+let g:fzf_layout = { 'window': { 'width': 120, 'height': 0.5, 'yoffset': 0, 'border': 'rounded' } }
 
 let $FZF_DEFAULT_COMMAND = 'rg --files --hidden'
 
+command! -bang -nargs=* RgTony call fzf#vim#grep("rg --line-number --no-heading --color=always --smart-case -- ".shellescape(<q-args>), 1, fzf#vim#with_preview(), <bang>0)
+"command! -bang -nargs=* RgTony call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case -- ".shellescape(<q-args>), 1, fzf#vim#with_preview(), <bang>0)
 
-" custom ripgrep command
-command! -bang -nargs=* Rg
-  \ call fzf#vim#grep(
-  \   'rg --column --line-number -w --hidden --ignore-case --no-heading --color=always '.shellescape(<q-args>), 1,
-  \   <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'up:60%')
-  \           : fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'right:50%', '?'),
-  \   <bang>0)
+"" custom ripgrep command
+"command! -bang -nargs=* RgTony
+"  \ call fzf#vim#grep(
+"  \   'rg --column --line-number -w --hidden --ignore-case --no-heading --color=always -- '.shellescape(<q-args>), 1,
+"  \   <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'up:60%')
+"  \           : fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'right:50%', '?'),
+"  \   <bang>0)
 
-command! -bang LibFiles call fzf#vim#files('lib/simple', <bang>0)
-nnoremap <leader>l :LibFiles<cr>
+"command! -bang LibFiles call fzf#vim#files('lib/simple', <bang>0)
+"nnoremap <leader>l :LibFiles<cr>
 
-command! -bang SchemaFiles call fzf#vim#files('lib/simple/schema', <bang>0)
-nnoremap <leader>s :SchemaFiles<cr>
+"command! -bang SchemaFiles call fzf#vim#files('lib/simple/schema', <bang>0)
+"nnoremap <leader>s :SchemaFiles<cr>
 
-command! -bang WebFiles call fzf#vim#files('web', <bang>0)
-nnoremap <leader>w :WebFiles<cr>
+"command! -bang WebFiles call fzf#vim#files('web', <bang>0)
+"nnoremap <leader>w :WebFiles<cr>
 
-command! -bang TestFiles call fzf#vim#files('web', <bang>0)
-nnoremap <leader>gt :TestFiles<cr>
+"command! -bang TestFiles call fzf#vim#files('web', <bang>0)
+"nnoremap <leader>gt :TestFiles<cr>
 
-command! -bang DirFiles call fzf#vim#files(expand('%:p:h'), <bang>0)
-nnoremap <leader>d :DirFiles<cr>
+"command! -bang DirFiles call fzf#vim#files(expand('%:p:h'), <bang>0)
+"nnoremap <leader>d :DirFiles<cr>
 
 
 function! RunAllTests()
   :w
-  :exec ":T echo \"Running all tests\"; bundle exec rspec --format p --tag ~js --exclude-pattern \"spec/system/**/*_spec.rb\""
+  :exec ":T echo \"Running all tests\"; mix test"
 endfunction
 
 " Rails/rspec test runners
 function! RunTests(filename)
     " Write the file and run tests for the given filename
     :w
-    :exec ":T echo \"Running " . a:filename . "\"; bundle exec rspec --format p " . a:filename
+    :exec ":T echo \"Running " . a:filename . "\"; mix test " . a:filename
 endfunction
 
 function! SetTestFile()
@@ -470,7 +507,7 @@ function! RunTestFile(...)
     endif
 
     " Run the tests for the previously-marked file.
-    let in_spec_file = match(expand("%"), '_spec.rb$') != -1
+    let in_spec_file = match(expand("%"), '_test.exs$') != -1
     if in_spec_file
         call SetTestFile()
     elseif !exists("t:grb_test_file")

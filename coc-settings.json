@@ -1,5 +1,16 @@
 {
+  "suggest.noselect": true,
+  "solargraph.useBundler": true,
+  "solargraph.checkGemVersion": false,
+  "solargraph.diagnostics": false,
+  "solargraph.formatting": true,
+  "solargraph.autoformat": true,
+  "solargraph.hover": true,
   "rust-analyzer.inlayHints.typeHints": false,
   "rust-analyzer.inlayHints.enable": false,
-  "elixirLS.dialyzerEnabled": false
+  "elixirLS.dialyzerEnabled": false,
+  "codelens.enable": true,
+  "diagnostic.checkCurrentLine": false,
+  "diagnostic.virtualText": false,
+  "diagnostic.virtualTextCurrentLineOnly": false
 }
